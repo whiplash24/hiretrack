@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import connectDB from "./src/config/db.js"
 import authRoutes from "./src/routes/authRoutes.js"
 import testRoutes from "./src/routes/testRoutes.js"
+import applicationRoutes from "./src/routes/applicationRoutes.js"
 
 dotenv.config()
 connectDB()
@@ -14,6 +15,7 @@ app.use(express.json())
 
 app.use("/api/auth", authRoutes)
 app.use("/api/test", testRoutes)
+app.use("/api/applications", applicationRoutes)
 
 app.get("/", (req, res) => {
   res.json({ message: "HireTrack API running" })
