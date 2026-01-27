@@ -1,25 +1,40 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Dashboard from "./pages/Dashboard"
-import ProtectedRoute from "./components/ProtectedRoute"
+import Applications from "./pages/Applications"
+
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem("token")
+  return token ? children : <Navigate to="/login" />
+}
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/applications"
+        element={
+          <PrivateRoute>
+            <Applications />
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="*" element={<Navigate to="/login" />} />
+    </Routes>
   )
 }
 
