@@ -1,9 +1,10 @@
 import express from "express"
-import authMiddleware from "../middleware/authMiddleware.js"
 import { getDashboardStats } from "../controllers/analyticsController.js"
+import authMiddleware from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
-router.get("/dashboard", authMiddleware, getDashboardStats)
+router.use(authMiddleware)
+router.get("/", getDashboardStats)
 
 export default router
