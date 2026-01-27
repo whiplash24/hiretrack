@@ -1,35 +1,33 @@
 import Application from "../models/Application.js"
 
 export const getDashboardStats = async (req, res) => {
-  const userId = req.user._id
+  try {
+    const userId = req.user._id
 
-  const total = await Application.countDocuments({ user: userId })
-  const offers = await Application.countDocuments({ user: userId, status: "OFFER" })
-  const rejected = await Application.countDocuments({ user: userId, status: "REJECTED" })
-  const active = await Application.countDocuments({
-    user: userId,
-    status: { $in: ["APPLIED", "OA", "INTERVIEW"] }
-  })
+    const total = await Application.countDocuments({ user: userId })
 
-  const byStatus = await Application.aggregate([
-    { $match: { user: userId } },
-    { $group: { _id: "$status", count: { $sum: 1 } } }
-  ])
+    const offers = await Application.countDocuments({
+      user: userId,
+      status: "OFFER",
+    })
 
-  const byDomain = await Application.aggregate([
-    { $match: { user: userId, domain: { $ne: null } } },
-    { $group: { _id: "$domain", count: { $sum: 1 } } }
-  ])
+    const rejected = await Application.countDocuments({
+      user: userId,
+      status: "REJECTED",
+    })
 
-  const conversionRate = total > 0 ? ((offers / total) * 100).toFixed(2) : "0.00"
+    const active = await Application.countDocuments({
+      user: userId,
+      status: { $in: ["APPLIED", "INTERVIEW"] },
+    })
 
-  res.json({
-    total,
-    active,
-    offers,
-    rejected,
-    conversionRate,
-    byStatus,
-    byDomain
-  })
+    res.json({
+      total,
+      active,
+      offers,
+      rejected,
+    })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
 }
