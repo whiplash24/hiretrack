@@ -1,66 +1,50 @@
 import Application from "../models/Application.js"
 
 export const createApplication = async (req, res) => {
-  const application = await Application.create({
-    ...req.body,
-    user: req.user._id
-  })
-  res.status(201).json(application)
+  try {
+    const { company, role } = req.body
+
+    if (!company || !role) {
+      return res.status(400).json({ message: "Company and role are required" })
+    }
+
+    const application = await Application.create({
+      user: req.user._id,
+      company,
+      role,
+      status: "APPLIED",
+      type: "INTERNSHIP",
+    })
+
+    res.status(201).json(application)
+  } catch (error) {
+    console.error("Create application error:", error.message)
+    res.status(500).json({ message: "Failed to create application" })
+  }
 }
 
 export const getApplications = async (req, res) => {
-  const applications = await Application.find({ user: req.user._id }).sort({ createdAt: -1 })
-  res.json(applications)
-}
-
-export const updateApplication = async (req, res) => {
-  const application = await Application.findOneAndUpdate(
-    { _id: req.params.id, user: req.user._id },
-    req.body,
-    { new: true }
-  )
-  res.json(application)
+  try {
+    const applications = await Application.find({ user: req.user._id })
+    res.json(applications)
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch applications" })
+  }
 }
 
 export const deleteApplication = async (req, res) => {
-  await Application.findOneAndDelete({ _id: req.params.id, user: req.user._id })
-  res.json({ message: "Application deleted" })
-}
+  try {
+    const application = await Application.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user._id,
+    })
 
-export const addRound = async (req, res) => {
-  const application = await Application.findOne({
-    _id: req.params.id,
-    user: req.user._id
-  })
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" })
+    }
 
-  application.rounds.push(req.body)
-
-  if (req.body.status === "REJECTED") {
-    application.status = "REJECTED"
+    res.json({ message: "Application deleted" })
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete application" })
   }
-
-  await application.save()
-  res.json(application)
-}
-
-export const updateRoundStatus = async (req, res) => {
-  const { roundIndex, status } = req.body
-
-  const application = await Application.findOne({
-    _id: req.params.id,
-    user: req.user._id
-  })
-
-  application.rounds[roundIndex].status = status
-
-  if (status === "REJECTED") {
-    application.status = "REJECTED"
-  }
-
-  if (status === "CLEARED") {
-    application.status = "INTERVIEW"
-  }
-
-  await application.save()
-  res.json(application)
 }

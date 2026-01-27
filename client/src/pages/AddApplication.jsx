@@ -1,74 +1,49 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createApplication } from "../services/applicationService";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { createApplication } from "../services/applicationService"
 
 function AddApplication() {
-  const navigate = useNavigate();
-
-  const [form, setForm] = useState({
-    company: "",
-    role: "",
-    status: "APPLIED",
-  });
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const [company, setCompany] = useState("")
+  const [role, setRole] = useState("")
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    await createApplication(form);
-    navigate("/applications");
-  } catch (err) {
-    console.error("Create application failed:", err);
-    alert("Failed to save application. Check console.");
+    e.preventDefault()
+    try {
+      await createApplication({ company, role })
+      navigate("/applications")
+    } catch (err) {
+      console.error("Create application failed", err)
+    }
   }
-};
-
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow w-96"
-      >
-        <h1 className="text-xl font-bold mb-4">Add Application</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Add Application</h1>
 
+      <form onSubmit={handleSubmit} className="space-y-3 max-w-sm">
         <input
-          name="company"
+          className="border p-2 w-full"
           placeholder="Company"
-          className="w-full mb-3 p-2 border rounded"
-          onChange={handleChange}
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
           required
         />
 
         <input
-          name="role"
+          className="border p-2 w-full"
           placeholder="Role"
-          className="w-full mb-3 p-2 border rounded"
-          onChange={handleChange}
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
           required
         />
 
-        <select
-          name="status"
-          className="w-full mb-4 p-2 border rounded"
-          onChange={handleChange}
-        >
-          <option value="APPLIED">Applied</option>
-          <option value="INTERVIEW">Interview</option>
-          <option value="OFFER">Offer</option>
-          <option value="REJECTED">Rejected</option>
-        </select>
-
-        <button className="w-full bg-blue-600 text-white py-2 rounded">
+        <button className="bg-blue-600 text-white px-4 py-2 rounded">
           Save
         </button>
       </form>
     </div>
-  );
+  )
 }
 
-export default AddApplication;
+export default AddApplication
