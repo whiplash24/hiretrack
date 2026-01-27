@@ -31,7 +31,16 @@ function Applications() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-2xl font-bold mb-4">Applications</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Applications</h1>
+
+        <a
+          href="/applications/new"
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          + Add
+        </a>
+      </div>  
 
       {applications.length === 0 ? (
         <p>No applications yet.</p>
