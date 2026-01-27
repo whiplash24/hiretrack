@@ -1,17 +1,11 @@
-const API_URL = "http://localhost:5000/api/applications"
+import api from "../api/axios";
 
 export const fetchApplications = async () => {
-  const token = localStorage.getItem("token")
+  const response = await api.get("/applications");
+  return response.data;
+};
 
-  const res = await fetch(API_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch applications")
-  }
-
-  return res.json()
-}
+export const createApplication = async (data) => {
+  const response = await api.post("/applications", data);
+  return response.data;
+};

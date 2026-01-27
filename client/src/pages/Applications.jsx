@@ -1,59 +1,41 @@
-import { useEffect, useState } from "react"
-import { fetchApplications } from "../services/applicationService"
+import { useEffect, useState } from "react";
+import { fetchApplications } from "../services/applicationService";
 
 function Applications() {
-  const [applications, setApplications] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadApplications = async () => {
-      try {
-        const data = await fetchApplications()
-        setApplications(data)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadApplications()
-  }, [])
+    const loadApps = async () => {
+      const data = await fetchApplications();
+      setApplications(data);
+      setLoading(false);
+    };
+    loadApps();
+  }, []);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading applications...</p>
-      </div>
-    )
+    return <div className="p-6">Loading applications...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-6">My Applications</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Applications</h1>
 
-      {applications.length === 0 ? (
-        <p>No applications yet</p>
-      ) : (
-        <div className="grid gap-4">
-          {applications.map(app => (
-            <div
-              key={app._id}
-              className="bg-white p-4 rounded shadow flex justify-between"
-            >
-              <div>
-                <h2 className="font-semibold">{app.company}</h2>
-                <p className="text-sm text-gray-500">{app.role}</p>
-              </div>
-              <span className="text-sm font-medium">
-                {app.status}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="space-y-3">
+        {applications.map((app) => (
+          <div
+            key={app._id}
+            className="bg-white p-4 rounded shadow border"
+          >
+            <h2 className="font-semibold">{app.company}</h2>
+            <p>{app.role}</p>
+            <p className="text-sm text-gray-500">{app.status}</p>
+          </div>
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
-export default Applications
+export default Applications;
