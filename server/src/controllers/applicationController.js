@@ -2,7 +2,7 @@ import Application from "../models/Application.js"
 
 export const createApplication = async (req, res) => {
   try {
-    const { company, role } = req.body
+    const { company, role, type = "INTERNSHIP", status = "APPLIED" } = req.body
 
     if (!company || !role) {
       return res.status(400).json({ message: "Company and role are required" })
@@ -12,14 +12,13 @@ export const createApplication = async (req, res) => {
       user: req.user._id,
       company,
       role,
-      status: "APPLIED",
-      type: "INTERNSHIP",
+      type,
+      status,
     })
 
     res.status(201).json(application)
   } catch (error) {
-    console.error("Create application error:", error.message)
-    res.status(500).json({ message: "Failed to create application" })
+    res.status(500).json({ message: error.message })
   }
 }
 
@@ -28,7 +27,29 @@ export const getApplications = async (req, res) => {
     const applications = await Application.find({ user: req.user._id })
     res.json(applications)
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch applications" })
+    res.status(500).json({ message: error.message })
+  }
+}
+
+export const updateApplicationStatus = async (req, res) => {
+  try {
+    const { status } = req.body
+
+    const application = await Application.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    })
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" })
+    }
+
+    application.status = status
+    await application.save()
+
+    res.json(application)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
   }
 }
 
@@ -45,6 +66,6 @@ export const deleteApplication = async (req, res) => {
 
     res.json({ message: "Application deleted" })
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete application" })
+    res.status(500).json({ message: error.message })
   }
 }
