@@ -15,10 +15,12 @@ function Dashboard() {
     loadStats()
   }, [])
 
-  const handleLogout = () => {
+const handleLogout = () => {
+  if (window.confirm("Are you sure you want to logout?")) {
     localStorage.removeItem("token")
     navigate("/login")
   }
+}
 
   if (!stats) {
     return (
