@@ -1,16 +1,31 @@
 import { useEffect, useState } from "react"
-import { fetchApplications } from "../services/applicationService"
+import {
+  fetchApplications,
+  updateApplicationStatus,
+  deleteApplication,
+} from "../services/applicationService"
 
 function Applications() {
   const [apps, setApps] = useState([])
 
+  const loadApps = async () => {
+    const data = await fetchApplications()
+    setApps(data)
+  }
+
   useEffect(() => {
-    const load = async () => {
-      const data = await fetchApplications()
-      setApps(data)
-    }
-    load()
+    loadApps()
   }, [])
+
+  const handleStatusChange = async (id, status) => {
+    await updateApplicationStatus(id, status)
+    loadApps()
+  }
+
+  const handleDelete = async (id) => {
+    await deleteApplication(id)
+    setApps(apps.filter((a) => a._id !== id))
+  }
 
   return (
     <div className="p-6">
@@ -18,14 +33,38 @@ function Applications() {
 
       {apps.length === 0 && <p>No applications yet.</p>}
 
-      <ul className="space-y-2">
+      <div className="space-y-3">
         {apps.map((app) => (
-          <li key={app._id} className="border p-3 rounded">
-            <p className="font-semibold">{app.company}</p>
-            <p className="text-sm text-gray-600">{app.role}</p>
-          </li>
+          <div key={app._id} className="border p-4 rounded flex justify-between">
+            <div>
+              <p className="font-semibold">{app.company}</p>
+              <p className="text-sm">{app.role}</p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <select
+                value={app.status}
+                onChange={(e) =>
+                  handleStatusChange(app._id, e.target.value)
+                }
+                className="border p-1"
+              >
+                <option value="APPLIED">Applied</option>
+                <option value="INTERVIEW">Interview</option>
+                <option value="OFFER">Offer</option>
+                <option value="REJECTED">Rejected</option>
+              </select>
+
+              <button
+                onClick={() => handleDelete(app._id)}
+                className="text-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }
