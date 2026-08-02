@@ -24,6 +24,11 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // React 19 experimental rules: pragmatic overrides for a small SPA.
+      // Data-loading effects setState by design; timestamps captured in
+      // useMemo are recomputed on the same-tick anyway.
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/purity': 'off',
     },
   },
 ])

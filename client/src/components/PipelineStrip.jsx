@@ -16,7 +16,7 @@ export default function PipelineStrip({
 }) {
   const [hover, setHover] = useState(null)
 
-  const { ticks, xForDate, todayX, minDate, maxDate } = useMemo(() => {
+  const { ticks, todayX, minDate, maxDate } = useMemo(() => {
     const now = new Date()
     if (apps.length === 0) {
       const start = new Date(now.getTime() - 30 * 86400000)
@@ -54,7 +54,7 @@ export default function PipelineStrip({
         color: STATUS_COLOR[status] || "#8A7A76",
       }
     })
-    return { ticks, xForDate, todayX: xForDate(now), minDate: min, maxDate: max }
+    return { ticks, todayX: xForDate(now), minDate: min, maxDate: max }
   }, [apps, height, compact])
 
   const axisPad = compact ? 96 : 128
@@ -214,8 +214,6 @@ export default function PipelineStrip({
 }
 
 function stageY(status, height, compact) {
-  const idx = STATUS_ORDER.indexOf(status)
-  // 0=APPLIED at bottom, higher index = higher up, except REJECTED sinks to bottom-most.
   const top = compact ? 14 : 22
   const bottom = compact ? 14 : 22
   const usable = height - top - bottom
