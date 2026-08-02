@@ -1,6 +1,8 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { registerUser } from "../services/authService"
+import AuthLayout from "../layouts/AuthLayout"
+import Field from "../components/Field"
 
 function Register() {
   const [form, setForm] = useState({
@@ -9,52 +11,80 @@ function Register() {
     password: "",
     college: "",
     branch: "",
-    graduationYear: ""
+    graduationYear: "",
   })
   const [error, setError] = useState("")
+  const [busy, setBusy] = useState(false)
   const navigate = useNavigate()
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
-
+    setBusy(true)
     try {
       const data = await registerUser(form)
       localStorage.setItem("token", data.token)
       navigate("/dashboard")
     } catch (err) {
       setError(err.message)
+    } finally {
+      setBusy(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow w-96"
-      >
-        <h1 className="text-2xl font-bold mb-4 text-center">Register</h1>
-
+    <AuthLayout
+      eyebrow="Section · 00 · Enrolment"
+      title={<>Start an edition.</>}
+      kicker="Set up the notebook. Two minutes; then log your first entry."
+      footer={
+        <>
+          Already have an account?{" "}
+          <Link to="/login" className="text-ink underline decoration-accent underline-offset-4">
+            Sign in
+          </Link>
+          .
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} noValidate className="space-y-6">
         {error && (
-          <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
+          <div role="alert" className="border border-rule bg-bg-elev p-3">
+            <div className="eyebrow text-accent">Enrolment failed</div>
+            <p className="mt-1 text-sm text-ink">{error}</p>
+          </div>
         )}
 
-        <input name="name" placeholder="Name" className="w-full mb-2 p-2 border rounded" onChange={handleChange} required />
-        <input name="email" type="email" placeholder="Email" className="w-full mb-2 p-2 border rounded" onChange={handleChange} required />
-        <input name="password" type="password" placeholder="Password" className="w-full mb-2 p-2 border rounded" onChange={handleChange} required />
-        <input name="college" placeholder="College" className="w-full mb-2 p-2 border rounded" onChange={handleChange} />
-        <input name="branch" placeholder="Branch" className="w-full mb-2 p-2 border rounded" onChange={handleChange} />
-        <input name="graduationYear" placeholder="Graduation Year" className="w-full mb-4 p-2 border rounded" onChange={handleChange} />
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <Field label="Name" required className="md:col-span-2">
+            <input className="field-input" value={form.name} onChange={set("name")} required autoComplete="name" />
+          </Field>
+          <Field label="Email" required className="md:col-span-2">
+            <input type="email" className="field-input" value={form.email} onChange={set("email")} required autoComplete="email" />
+          </Field>
+          <Field label="Password" required className="md:col-span-2">
+            <input type="password" className="field-input" value={form.password} onChange={set("password")} required autoComplete="new-password" />
+          </Field>
 
-        <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-          Register
+          <div className="eyebrow md:col-span-2 mt-2">Optional · context</div>
+          <Field label="College">
+            <input className="field-input" value={form.college} onChange={set("college")} />
+          </Field>
+          <Field label="Branch">
+            <input className="field-input" value={form.branch} onChange={set("branch")} />
+          </Field>
+          <Field label="Graduation year" className="md:col-span-2">
+            <input inputMode="numeric" className="field-input num" value={form.graduationYear} onChange={set("graduationYear")} placeholder="e.g. 2027" />
+          </Field>
+        </div>
+
+        <button type="submit" disabled={busy} className="btn btn-primary w-full disabled:cursor-wait disabled:opacity-60">
+          {busy ? "Setting up…" : "Begin →"}
         </button>
       </form>
-    </div>
+    </AuthLayout>
   )
 }
 
