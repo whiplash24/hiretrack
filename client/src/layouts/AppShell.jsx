@@ -3,8 +3,9 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom"
 const NAV = [
   { to: "/dashboard", label: "Dashboard", num: "01" },
   { to: "/applications", label: "Applications", num: "02" },
-  { to: "/add-application", label: "New entry", num: "03" },
-  { to: "/settings", label: "Settings", num: "04" },
+  { to: "/analytics", label: "Analytics", num: "03" },
+  { to: "/add-application", label: "New entry", num: "04" },
+  { to: "/settings", label: "Settings", num: "05" },
 ]
 
 export default function AppShell() {

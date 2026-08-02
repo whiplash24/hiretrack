@@ -13,7 +13,7 @@ function Settings() {
     <div className="px-6 pb-16 pt-8 md:px-10 md:pt-12">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-6 rule-b border-b border-rule pb-6">
         <div>
-          <div className="eyebrow">Section · 04 · Settings</div>
+          <div className="eyebrow">Section · 05 · Settings</div>
           <h1 className="mt-2 font-serif text-4xl leading-tight md:text-5xl">
             The <em className="text-accent">colophon</em>.
           </h1>
