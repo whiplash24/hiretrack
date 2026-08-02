@@ -1,3 +1,154 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    background-color: #3a1212;
+    color: #f5edea;
+    min-height: 100%;
+  }
+  body {
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: #f2c14e;
+    color: #3a1212;
+  }
+  *:focus-visible {
+    outline: 2px solid #f2c14e;
+    outline-offset: 2px;
+  }
+  input,
+  select,
+  textarea,
+  button {
+    font-family: inherit;
+    color: inherit;
+  }
+  /* Style native <select> options against the dark bg */
+  select option {
+    background: #4a1818;
+    color: #f5edea;
+  }
+  /* Consistent hairlines for hr */
+  hr {
+    border: 0;
+    border-top: 1px solid #6e2828;
+  }
+  /* Autofill fix */
+  input:-webkit-autofill {
+    -webkit-text-fill-color: #f5edea;
+    -webkit-box-shadow: 0 0 0 1000px #4a1818 inset;
+    caret-color: #f5edea;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #b8a6a2;
+  }
+  .rule {
+    border-top: 1px solid #6e2828;
+  }
+  .rule-b {
+    border-bottom: 1px solid #6e2828;
+  }
+  .field-input {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid #6e2828;
+    padding: 10px 0 8px;
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    font-size: 15px;
+    color: #f5edea;
+    transition: border-color 120ms ease;
+  }
+  .field-input::placeholder {
+    color: #8a7a76;
+  }
+  .field-input:focus {
+    outline: none;
+    border-bottom-color: #f2c14e;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid #6e2828;
+    background: transparent;
+    color: #f5edea;
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+  .btn:hover {
+    background: #5a1f1f;
+    border-color: #b8a6a2;
+  }
+  .btn-primary {
+    background: #f5edea;
+    color: #3a1212;
+    border-color: #f5edea;
+  }
+  .btn-primary:hover {
+    background: #f2c14e;
+    color: #3a1212;
+    border-color: #f2c14e;
+  }
+  .btn-ghost {
+    border-color: transparent;
+    color: #b8a6a2;
+  }
+  .btn-ghost:hover {
+    background: #4a1818;
+    color: #f5edea;
+    border-color: transparent;
+  }
+  .btn-danger {
+    color: #b8a6a2;
+    border-color: transparent;
+  }
+  .btn-danger:hover {
+    color: #f5edea;
+    background: #6e2828;
+    border-color: transparent;
+  }
+  .num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Custom scrollbar to match the theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #3a1212;
+}
+::-webkit-scrollbar-thumb {
+  background: #5a1f1f;
+  border: 2px solid #3a1212;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6e2828;
+}
