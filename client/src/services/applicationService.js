@@ -5,6 +5,11 @@ export const fetchApplications = async () => {
   return res.data
 }
 
+export const fetchApplication = async (id) => {
+  const res = await api.get(`/applications/${id}`)
+  return res.data
+}
+
 export const createApplication = async (data) => {
   const res = await api.post("/applications", data)
   return res.data
