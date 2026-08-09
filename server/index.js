@@ -42,10 +42,6 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", uptime: process.uptime() })
 })
 
-app.get("/api/test", (req, res) => {
-  res.json({ message: "API working" })
-})
-
 app.use("/api/auth", authRoutes)
 app.use("/api/applications", applicationRoutes)
 app.use("/api/analytics", analyticsRoutes)
