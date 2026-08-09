@@ -1,101 +1,73 @@
-# HireTrack 🚀
+# HireTrack
 
-HireTrack is a full-stack web application that helps students track job and internship applications in one place. Users can register, log in, add applications, update their progress, and view real-time analytics on a personalized dashboard.
+HireTrack is a full-stack web app that helps students track job and internship applications in one place. Register, log in, add applications, update their status through the pipeline, and see live analytics on a personalized dashboard.
 
-The goal of this project is to demonstrate real-world full-stack development skills including authentication, protected routes, CRUD operations, backend stability, and frontend–backend integration.
+**Live:** https://hiretrack-client.onrender.com (client) · https://hiretrack-server.onrender.com/api/health (server health)
 
-FEATURES
-- User authentication (Register & Login)
-- JWT-based protected routes
-- Add job/internship applications
-- Update application status (Applied, Interview, Offer, Rejected)
-- Delete applications
-- Dashboard analytics
-- Secure backend with MongoDB
-- Clean React + Tailwind UI
+## Features
+- Email + password auth with JWT
+- Protected routes on both client and server
+- CRUD for applications (company, role, type, status, notes)
+- Pipeline statuses: Applied → OA → Interview → Offer / Rejected
+- Dashboard analytics (total, active, offers, rejected)
+- Editorial red-themed UI with dedicated Landing, Applications, Analytics, and Settings surfaces
 
-TECH STACK
+## Tech stack
+- **Frontend:** React 19, Vite, Tailwind CSS, React Router v7, Axios
+- **Backend:** Node.js 20+, Express 4, Mongoose 8, JWT, bcryptjs
+- **Database:** MongoDB Atlas
+- **Deploy:** Render (Node web service + static site, blueprint in `render.yaml`)
 
-Frontend:
-- React (Vite)
-- Tailwind CSS
-- Axios
+## Project structure
+```
+hiretrack/
+├── client/          # Vite + React app
+│   ├── src/{api,components,layouts,pages,services,utils}
+│   └── .env.example
+├── server/          # Express API
+│   ├── src/{config,controllers,middleware,models,routes}
+│   ├── index.js
+│   └── .env.example
+└── render.yaml      # Render blueprint (both services)
+```
 
-Backend:
-- Node.js
-- Express.js
-- MongoDB (Mongoose)
-- JWT Authentication
+## Local development
 
-PROJECT STRUCTURE
+**Server**
+```
+cd server
+cp .env.example .env      # fill in MONGO_URI and JWT_SECRET
+npm install
+npm run dev               # http://localhost:5000
+```
 
-hiretrack
-├── client
-│   ├── src
-│   │   ├── api
-│   │   ├── pages
-│   │   ├── services
-│   │   ├── components
-│   │   ├── utils
-│   │   └── App.jsx
-│   └── package.json
-├── server
-│   ├── src
-│   │   ├── controllers
-│   │   ├── models
-│   │   ├── routes
-│   │   ├── middleware
-│   │   └── config
-│   └── package.json
-└── README.md
+**Client**
+```
+cd client
+cp .env.example .env.local
+npm install
+npm run dev               # http://localhost:5173
+```
 
-RUNNING THE PROJECT LOCALLY
+## Environment variables
 
-BACKEND SETUP
-1. Open terminal
-2. Navigate to backend folder:
-   cd server
-3. Install dependencies:
-   npm install
-4. Start backend server:
-   npm run dev
-5. Backend runs on:
-   http://localhost:5000
+**Server** (`server/.env`)
+- `MONGO_URI` — MongoDB Atlas connection string (required)
+- `JWT_SECRET` — long random string used to sign tokens (required)
+- `CLIENT_URL` — comma-separated CORS allowlist for production; leave empty locally
+- `PORT` — optional, defaults to 5000
 
-FRONTEND SETUP
-1. Open a new terminal
-2. Navigate to frontend folder:
-   cd client
-3. Install dependencies:
-   npm install
-4. Start frontend:
-   npm run dev
-5. Frontend runs on:
-   http://localhost:5173
+**Client** (`client/.env.local`)
+- `VITE_API_URL` — API base URL, must include `/api` suffix (e.g. `http://localhost:5000/api`)
 
-AUTHENTICATION FLOW
-- User registers or logs in
-- JWT token is returned by backend
-- Token is stored in localStorage
-- Protected routes require token
-- Unauthorized access redirects to login
+Startup will fail fast if `MONGO_URI` or `JWT_SECRET` is missing on the server.
 
-DASHBOARD ANALYTICS
-- Total applications
-- Active applications
-- Offers received
-- Rejected applications
-- Data updates in real time
+## Deployment (Render)
 
-PROJECT STATUS
-- Authentication: COMPLETE
-- Applications CRUD: COMPLETE
-- Dashboard analytics: COMPLETE
-- Frontend–Backend integration: COMPLETE
-- Backend stability: FIXED
-- Ready for deployment
+`render.yaml` defines both services as a Blueprint. Push to `main`, then in Render:
+1. New → Blueprint → point at this repo
+2. Fill in secrets in the dashboard: `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL` (server) and `VITE_API_URL` (client)
+3. Apply — server exposes `/api/health` for Render's healthcheck
 
-AUTHOR
-Tanay Singh
-BTech CSE Student
-HireTrack – Full Stack Portfolio Project
+## Author
+Tanay Singh — BTech CSE
