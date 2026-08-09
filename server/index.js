@@ -9,12 +9,38 @@ import analyticsRoutes from "./src/routes/analyticsRoutes.js"
 
 dotenv.config()
 
+const REQUIRED_ENV = ["MONGO_URI", "JWT_SECRET"]
+const missing = REQUIRED_ENV.filter((k) => !process.env[k])
+if (missing.length) {
+  console.error(`Missing required env vars: ${missing.join(", ")}`)
+  process.exit(1)
+}
+
 const app = express()
 
-app.use(cors())
+const allowedOrigins = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean)
+
+app.use(
+  cors({
+    origin: allowedOrigins.length
+      ? (origin, cb) => {
+          if (!origin || allowedOrigins.includes(origin)) return cb(null, true)
+          return cb(new Error(`Origin ${origin} not allowed by CORS`))
+        }
+      : true,
+    credentials: true,
+  })
+)
 app.use(express.json())
 
 connectDB()
+
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", uptime: process.uptime() })
+})
 
 app.get("/api/test", (req, res) => {
   res.json({ message: "API working" })
